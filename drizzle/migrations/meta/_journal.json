@@ -1,0 +1,41 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1791487618384,
+      "tag": "0000_token_credits",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791986163571,
+      "tag": "0001_payment_requests",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792138850816,
+      "tag": "0002_image_download_payments",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1792139880512,
+      "tag": "0003_style_variants",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1793181932598,
+      "tag": "0004_restrict_selected_catalog_read_policies",
+      "breakpoints": true
+    }
+  ]
+}
