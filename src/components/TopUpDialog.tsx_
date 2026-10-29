@@ -1,0 +1,75 @@
+import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { PricingPacks } from "@/components/PricingPacks";
+
+export type TopUpReason = "exhausted" | "insufficient" | "low" | "manual";
+
+interface TopUpDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  /** Passed through to PricingPacks for receipt emails / contact. */
+  email?: string;
+  /** Controls the contextual alert copy inside the dialog. */
+  reason?: TopUpReason;
+  /** Used with `reason="insufficient"` to say how many tokens are needed. */
+  requiredTokens?: number;
+}
+
+function dialogMessage(reason: TopUpReason, requiredTokens?: number): string {
+  switch (reason) {
+    case "exhausted":
+      return "You've used all your try-on tokens. Top up to keep generating.";
+    case "insufficient":
+      return requiredTokens
+        ? `You need ${requiredTokens} token${requiredTokens === 1 ? "" : "s"} for this action. Top up to continue.`
+        : "You don't have enough tokens for this action. Top up to continue.";
+    case "low":
+      return "You're running low on tokens. Top up to keep creating.";
+    case "manual":
+    default:
+      return "Choose a pack below to add more try-on tokens.";
+  }
+}
+
+/**
+ * Reusable token top-up dialog. Mount once per page that needs it and drive it
+ * with local state. The page stays clean; the modal only appears on demand,
+ * on an intercepted action, or when the URL hash is `#topup`.
+ *
+ * Closes automatically once a payment request is submitted, with a toast for
+ * confirmation — the user gets returned to whatever they were doing.
+ */
+export function TopUpDialog({
+  open,
+  onOpenChange,
+  email,
+  reason = "manual",
+  requiredTokens,
+}: TopUpDialogProps) {
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-xl">
+        <DialogHeader>
+          <DialogTitle>Top up your tokens</DialogTitle>
+          <DialogDescription>{dialogMessage(reason, requiredTokens)}</DialogDescription>
+        </DialogHeader>
+        <PricingPacks
+          email={email}
+          compact
+          onPaymentSubmitted={() => {
+            onOpenChange(false);
+            toast.success("Payment submitted!", {
+              description: "We'll verify it and add your tokens shortly.",
+            });
+          }}
+        />
+      </DialogContent>
+    </Dialog>
+  );
+}
